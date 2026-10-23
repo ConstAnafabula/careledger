@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareLedger | Hospital Billing Statement</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="brand">
+        <svg class="logo" viewBox="0 0 48 48" aria-hidden="true">
+          <rect width="48" height="48" rx="13" fill="currentColor"/>
+          <path d="M20 11h8v9h9v8h-9v9h-8v-9h-9v-8h9z" fill="#fff"/>
+        </svg>
+        <div>
+          <h1>CareLedger</h1>
+          <p>Hospital Billing Office &middot; Patient Statement Calculator</p>
+        </div>
+      </div>
+      <ul class="rules" aria-label="Billing rules">
+        <li><strong>20%</strong><span>assistance on balance after benefit</span></li>
+        <li><strong>&#8369;3,000</strong><span>maximum assistance</span></li>
+        <li><strong>Eligible only</strong><span>others receive none</span></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- FORM -->
+    <section class="panel" aria-labelledby="form-title">
+      <div class="panel-head">
+        <h2 id="form-title">Patient Billing Details</h2>
+        <p>All fields are required. Amounts are in Philippine pesos.</p>
+      </div>
+
+      <form id="billForm" novalidate>
+        <fieldset class="group">
+          <legend><span class="step">1</span> Patient &amp; Hospital</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="patientName">Patient's Name</label>
+              <input type="text" id="patientName" autocomplete="off" placeholder="e.g. Maria Santos">
+              <small class="err" data-for="patientName"></small>
+            </div>
+            <div class="field">
+              <label for="hospitalName">Hospital Name</label>
+              <input type="text" id="hospitalName" autocomplete="off" placeholder="e.g. Passi City District Hospital">
+              <small class="err" data-for="hospitalName"></small>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend><span class="step">2</span> Hospital Charges</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="days">Number of Days Admitted</label>
+              <div class="input-wrap suffix">
+                <input type="number" id="days" min="0" step="1" inputmode="numeric" placeholder="0">
+                <span class="adorn">days</span>
+              </div>
+              <small class="err" data-for="days"></small>
+            </div>
+            <div class="field">
+              <label for="roomRate">Daily Room Rate</label>
+              <div class="input-wrap prefix">
+                <span class="adorn">&#8369;</span>
+                <input type="number" id="roomRate" min="0" step="any" inputmode="decimal" placeholder="0.00">
+              </div>
+              <small class="err" data-for="roomRate"></small>
+            </div>
+            <div class="field">
+              <label for="labCharges">Laboratory &amp; Procedure Charges</label>
+              <div class="input-wrap prefix">
+                <span class="adorn">&#8369;</span>
+                <input type="number" id="labCharges" min="0" step="any" inputmode="decimal" placeholder="0.00">
+              </div>
+              <small class="err" data-for="labCharges"></small>
+            </div>
+            <div class="field">
+              <label for="medCharges">Medicine Charges</label>
+              <div class="input-wrap prefix">
+                <span class="adorn">&#8369;</span>
+                <input type="number" id="medCharges" min="0" step="any" inputmode="decimal" placeholder="0.00">
+              </div>
+              <small class="err" data-for="medCharges"></small>
+            </div>
+            <div class="field span2">
+              <label for="proFees">Professional Fees</label>
+              <div class="input-wrap prefix">
+                <span class="adorn">&#8369;</span>
+                <input type="number" id="proFees" min="0" step="any" inputmode="decimal" placeholder="0.00">
+              </div>
+              <small class="err" data-for="proFees"></small>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend><span class="step">3</span> Deductions &amp; Assistance</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="benefit">Benefit Amount</label>
+              <div class="input-wrap prefix">
+                <span class="adorn">&#8369;</span>
+                <input type="number" id="benefit" min="0" step="any" inputmode="decimal" placeholder="0.00">
+              </div>
+              <small class="err" data-for="benefit"></small>
+            </div>
+            <div class="field">
+              <span class="label" id="eligLabel">Assistance Eligibility</span>
+              <div class="segmented" role="radiogroup" aria-labelledby="eligLabel">
+                <label>
+                  <input type="radio" name="eligibility" value="Eligible">
+                  <span>Eligible</span>
+                </label>
+                <label>
+                  <input type="radio" name="eligibility" value="Not Eligible" checked>
+                  <span>Not Eligible</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend><span class="step">4</span> Payment</legend>
+          <div class="grid">
+            <div class="field span2">
+              <label for="payment">Patient's Payment</label>
+              <div class="input-wrap prefix">
+                <span class="adorn">&#8369;</span>
+                <input type="number" id="payment" min="0" step="any" inputmode="decimal" placeholder="0.00">
+              </div>
+              <small class="err" data-for="payment"></small>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit" class="btn primary">Generate Statement</button>
+          <button type="button" id="resetBtn" class="btn ghost">Clear Form</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- STATEMENT -->
+    <aside class="statement-col" aria-labelledby="result-title" aria-live="polite">
+      <div class="panel statement" id="statement">
+        <div class="panel-head">
+          <h2 id="result-title">Billing Statement</h2>
+          <p id="stmtDate">Awaiting patient details</p>
+        </div>
+
+        <div id="emptyState" class="empty">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M18 8h22l10 10v38a2 2 0 0 1-2 2H18a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M40 8v10h10M24 30h18M24 38h18M24 46h10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+          <p>Complete the form and press <strong>Generate Statement</strong> to see the full breakdown.</p>
+        </div>
+
+        <div id="results" hidden>
+          <div class="who">
+            <div>
+              <span class="tiny">Patient</span>
+              <strong id="outPatient"></strong>
+            </div>
+            <div>
+              <span class="tiny">Hospital</span>
+              <strong id="outHospital"></strong>
+            </div>
+          </div>
+
+          <div class="payable-card" id="payableCard">
+            <span class="tiny">Final Amount Payable</span>
+            <strong id="outPayable"></strong>
+            <span class="badge" id="outStatus"></span>
+          </div>
+
+          <div class="mix" aria-hidden="true">
+            <div class="mix-bar" id="mixBar"></div>
+            <ul class="mix-legend" id="mixLegend"></ul>
+          </div>
+
+          <table class="lines">
+            <tbody>
+              <tr><th scope="row">Room charge <em id="outRoomNote"></em></th><td id="outRoom"></td></tr>
+              <tr><th scope="row">Laboratory &amp; procedures</th><td id="outLab"></td></tr>
+              <tr><th scope="row">Medicines</th><td id="outMed"></td></tr>
+              <tr><th scope="row">Professional fees</th><td id="outFees"></td></tr>
+              <tr class="sum"><th scope="row">Total bill</th><td id="outTotal"></td></tr>
+              <tr class="less"><th scope="row">Less: benefit</th><td id="outBenefit"></td></tr>
+              <tr class="sum"><th scope="row">Balance after benefit</th><td id="outRemaining"></td></tr>
+              <tr class="less"><th scope="row">Less: assistance <em id="outAssistNote"></em></th><td id="outAssist"></td></tr>
+              <tr class="grand"><th scope="row">Final amount payable</th><td id="outPayable2"></td></tr>
+              <tr><th scope="row">Patient's payment</th><td id="outPayment"></td></tr>
+              <tr class="result"><th scope="row" id="outDiffLabel"></th><td id="outDiff"></td></tr>
+            </tbody>
+          </table>
+
+          <p id="notice" class="notice" hidden></p>
+
+          <button type="button" id="printBtn" class="btn ghost full">Print Statement</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="foot">
+    <p>Classroom activity only. These rules are not actual hospital or PhilHealth policies.</p>
+  </footer>
+
+  <script src="js/scripts.js"></script>
+</body>
+</html>
